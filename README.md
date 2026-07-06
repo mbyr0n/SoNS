@@ -1,4 +1,4 @@
-# SoNS - Self-organizing Nervous Systems para enjambres roboticos
+# SoNS - Self-organizing Nervous Systems
 
 ## Descripcion
 
