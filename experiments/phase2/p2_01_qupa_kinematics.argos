@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<argos-configuration>
+  <framework>
+    <experiment length="20" ticks_per_second="10" random_seed="1" />
+    <system threads="2" />
+  </framework>
+  <controllers>
+    <lua_controller id="qupa_phase2_kinematics_lua">
+      <actuators>
+        <differential_steering implementation="default" />
+        <leds implementation="default" medium="leds" />
+      </actuators>
+      <sensors>
+        <positioning implementation="default" />
+      </sensors>
+      <params script="controller/phase2/qupa/control_qupa_kinematics_test.lua" />
+    </lua_controller>
+  </controllers>
+  <arena size="4,4,2" center="0,0,1">
+    <floor id="floor" source="image" path="experiments/floor.png" pixels_per_meter="100" />
+    <qupa id="q101" marker_id="101" tag_medium="tags">
+      <body position="0,0,0" orientation="0,0,0" />
+      <controller config="qupa_phase2_kinematics_lua" />
+    </qupa>
+  </arena>
+  <physics_engines>
+    <pointmass3d id="pm3d" iterations="10" />
+  </physics_engines>
+  <media>
+    <tag id="tags" index="grid" grid_size="5,5,5" />
+    <led id="leds" index="grid" grid_size="40,40,4" />
+  </media>
+  <visualization>
+    <qt-opengl lua_editor="true">
+      <camera>
+        <placement idx="0" position="0,-5,4" look_at="0,0,0.5" up="0,0,1" lens_focal_length="35" />
+      </camera>
+    </qt-opengl>
+  </visualization>
+</argos-configuration>

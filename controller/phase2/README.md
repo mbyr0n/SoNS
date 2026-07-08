@@ -56,3 +56,11 @@ The table ignores packets from the local robot and marks entries inactive after 
 - `wrap_angle(angle)`
 - `norm2(x, y)`
 - `deadzone(value, threshold)`
+
+## Qupa Kinematics
+
+`qupa/qupa_kinematics.lua` converts Phase 2 motion commands into differential wheel commands.
+
+- `differential_drive(v_cmd, w_cmd, params)` maps linear/angular velocity to left/right wheel speeds and preserves curvature during saturation.
+- `virtual_to_unicycle(vx, vy, yaw_rate, params)` maps a virtual planar command to unicycle motion for the differential Qupa.
+- `apply_to_wheels(robot_ref, command)` sends a computed command to `robot.wheels.set_velocity`.

@@ -9,6 +9,7 @@ CONSTANTS = ROOT / "controller" / "phase2" / "common" / "constants.lua"
 PROTOCOL = ROOT / "controller" / "phase2" / "common" / "protocol.lua"
 MATH_UTILS = ROOT / "controller" / "phase2" / "common" / "math_utils.lua"
 NEIGHBOR_TABLE = ROOT / "controller" / "phase2" / "common" / "neighbor_table.lua"
+QUPA_KINEMATICS = ROOT / "controller" / "phase2" / "qupa" / "qupa_kinematics.lua"
 README = ROOT / "controller" / "phase2" / "README.md"
 
 
@@ -128,20 +129,38 @@ def validate_neighbor_table():
     return 0
 
 
+def validate_qupa_kinematics():
+    try:
+        text = read_required(QUPA_KINEMATICS)
+    except FileNotFoundError:
+        return fail(f"missing {QUPA_KINEMATICS.relative_to(ROOT)}")
+
+    checks = [
+        (r"function\s+M\.differential_drive\(v_cmd, w_cmd, params\)", "differential_drive(v_cmd, w_cmd, params) must exist"),
+        (r"function\s+M\.virtual_to_unicycle\(vx, vy, yaw_rate, params\)", "virtual_to_unicycle(vx, vy, yaw_rate, params) must exist"),
+        (r"function\s+M\.apply_to_wheels\(robot_ref, command\)", "apply_to_wheels(robot_ref, command) must exist"),
+    ]
+    for pattern, message in checks:
+        result = require(pattern, text, message)
+        if result:
+            return result
+    return 0
+
+
 def validate_readme():
     try:
         text = read_required(README)
     except FileNotFoundError:
         return fail(f"missing {README.relative_to(ROOT)}")
 
-    for snippet in ("UID", "DT = 0.1", "10 bytes", "Phase 3", "math_utils.lua", "neighbor_table.lua"):
+    for snippet in ("UID", "DT = 0.1", "10 bytes", "Phase 3", "math_utils.lua", "neighbor_table.lua", "qupa_kinematics.lua"):
         if snippet not in text:
             return fail(f"Phase 2 README must mention {snippet!r}")
     return 0
 
 
 def main():
-    for validator in (validate_constants, validate_protocol, validate_math_utils, validate_neighbor_table, validate_readme):
+    for validator in (validate_constants, validate_protocol, validate_math_utils, validate_neighbor_table, validate_qupa_kinematics, validate_readme):
         result = validator()
         if result != 0:
             return result
