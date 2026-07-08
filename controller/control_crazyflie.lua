@@ -10,6 +10,8 @@ local QUPA_TAG_IDS = {
    [104] = true,
    [105] = true,
    [106] = true,
+   [107] = true,
+   [108] = true,
 }
 
 function is_qupa_tag(tag_id)
