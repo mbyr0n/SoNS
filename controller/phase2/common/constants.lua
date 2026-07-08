@@ -1,0 +1,28 @@
+local M = {}
+
+M.DT = 0.1
+M.TICKS_PER_SECOND = 10
+M.NEIGHBOR_TIMEOUT_TICKS = 10
+
+M.CRAZYFLIE_UID = 200
+M.QUPA_UIDS = {101, 102, 103, 104, 105, 106}
+
+M.ROBOT_TYPE = {
+   QUPA = 1,
+   CRAZYFLIE = 2,
+}
+
+M.ROLE = {
+   NONE = 0,
+   LEADER = 1,
+   FOLLOWER = 2,
+}
+
+M.STATE = {
+   OK = 0,
+   STOP = 1,
+   ERROR = 2,
+   LOST_PARENT = 3,
+}
+
+return M
