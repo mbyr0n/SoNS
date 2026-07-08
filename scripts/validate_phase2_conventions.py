@@ -7,6 +7,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 CONSTANTS = ROOT / "controller" / "phase2" / "common" / "constants.lua"
 PROTOCOL = ROOT / "controller" / "phase2" / "common" / "protocol.lua"
+MATH_UTILS = ROOT / "controller" / "phase2" / "common" / "math_utils.lua"
 README = ROOT / "controller" / "phase2" / "README.md"
 
 
@@ -84,20 +85,39 @@ def validate_protocol():
     return 0
 
 
+def validate_math_utils():
+    try:
+        text = read_required(MATH_UTILS)
+    except FileNotFoundError:
+        return fail(f"missing {MATH_UTILS.relative_to(ROOT)}")
+
+    checks = [
+        (r"function\s+M\.clamp\(value, minimum, maximum\)", "clamp(value, minimum, maximum) must exist"),
+        (r"function\s+M\.wrap_angle\(angle\)", "wrap_angle(angle) must exist"),
+        (r"function\s+M\.norm2\(x, y\)", "norm2(x, y) must exist"),
+        (r"function\s+M\.deadzone\(value, threshold\)", "deadzone(value, threshold) must exist"),
+    ]
+    for pattern, message in checks:
+        result = require(pattern, text, message)
+        if result:
+            return result
+    return 0
+
+
 def validate_readme():
     try:
         text = read_required(README)
     except FileNotFoundError:
         return fail(f"missing {README.relative_to(ROOT)}")
 
-    for snippet in ("UID", "DT = 0.1", "10 bytes", "Phase 3"):
+    for snippet in ("UID", "DT = 0.1", "10 bytes", "Phase 3", "math_utils.lua"):
         if snippet not in text:
             return fail(f"Phase 2 README must mention {snippet!r}")
     return 0
 
 
 def main():
-    for validator in (validate_constants, validate_protocol, validate_readme):
+    for validator in (validate_constants, validate_protocol, validate_math_utils, validate_readme):
         result = validator()
         if result != 0:
             return result

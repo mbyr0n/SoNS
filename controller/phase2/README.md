@@ -33,3 +33,12 @@ The Phase 2 RAB packet has 10 bytes:
 | 10 | Reserved |
 
 This protocol is intentionally limited to Phase 2 heartbeat, state, and command messages. Phase 3 concepts such as recruitment, dynamic tree assignment, split, merge, and brain replacement are out of scope here.
+
+## Shared Math
+
+`common/math_utils.lua` provides small reusable helpers for controllers:
+
+- `clamp(value, minimum, maximum)`
+- `wrap_angle(angle)`
+- `norm2(x, y)`
+- `deadzone(value, threshold)`
