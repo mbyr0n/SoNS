@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8'?>
+<argos-configuration>
+  <framework>
+    <experiment length="12" ticks_per_second="10" random_seed="1" />
+    <system threads="2" />
+  </framework>
+  <controllers>
+    <lua_controller id="qupa_phase2_rab_lua">
+      <actuators>
+        <differential_steering implementation="default" />
+        <leds implementation="default" medium="leds" />
+        <range_and_bearing implementation="default" />
+      </actuators>
+      <sensors>
+        <positioning implementation="default" />
+        <range_and_bearing implementation="medium" medium="rab" />
+      </sensors>
+      <params script="controller/phase2/qupa/control_qupa_rab_test.lua" />
+    </lua_controller>
+    <lua_controller id="crazyflie_phase2_rab_lua">
+      <actuators>
+        <quadrotor_speed implementation="default" />
+        <leds implementation="default" medium="leds" />
+        <range_and_bearing implementation="default" />
+      </actuators>
+      <sensors>
+        <positioning implementation="default" />
+        <range_and_bearing implementation="medium" medium="rab" />
+      </sensors>
+      <params script="controller/phase2/crazyflie/control_crazyflie_rab_test.lua" />
+    </lua_controller>
+  </controllers>
+  <arena size="10,4,2" center="0,0,1">
+    <floor id="floor" source="image" path="experiments/floor.png" pixels_per_meter="100" />
+    <qupa id="q101" marker_id="101" tag_medium="tags" rab_range="3.0" rab_data_size="10">
+      <body position="-0.50,0.0,0" orientation="0,0,0" />
+      <controller config="qupa_phase2_rab_lua" />
+    </qupa>
+    <qupa id="q102" marker_id="102" tag_medium="tags" rab_range="3.0" rab_data_size="10">
+      <body position="0.50,0.0,0" orientation="0,0,0" />
+      <controller config="qupa_phase2_rab_lua" />
+    </qupa>
+    <qupa id="q103" marker_id="103" tag_medium="tags" rab_range="3.0" rab_data_size="10">
+      <body position="1.50,0.0,0" orientation="0,0,0" />
+      <controller config="qupa_phase2_rab_lua" />
+    </qupa>
+    <qupa id="q104" marker_id="104" tag_medium="tags" rab_range="3.0" rab_data_size="10">
+      <body position="4.80,0.0,0" orientation="0,0,0" />
+      <controller config="qupa_phase2_rab_lua" />
+    </qupa>
+    <crazyflie id="cf200" rab_range="3.0" rab_data_size="10">
+      <body position="0.50,0.80,1.0" orientation="0,0,0" />
+      <controller config="crazyflie_phase2_rab_lua" />
+      <crazyflie_battery start_charge="1.0" />
+    </crazyflie>
+  </arena>
+  <physics_engines>
+    <pointmass3d id="pm3d" iterations="10" />
+  </physics_engines>
+  <media>
+    <tag id="tags" index="grid" grid_size="5,5,5" />
+    <led id="leds" index="grid" grid_size="40,40,4" />
+    <range_and_bearing id="rab" index="grid" grid_size="1,1,1" />
+  </media>
+  <visualization>
+    <qt-opengl lua_editor="true">
+      <camera>
+        <placement idx="0" position="0,-6,5" look_at="0,0,0.5" up="0,0,1" lens_focal_length="35" />
+      </camera>
+    </qt-opengl>
+  </visualization>
+</argos-configuration>
