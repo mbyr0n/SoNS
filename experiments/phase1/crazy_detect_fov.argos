@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<argos-configuration>
+  <framework>
+    <experiment length="120" ticks_per_second="10" />
+    <system threads="2" />
+  </framework>
+  <controllers>
+    <lua_controller id="qupa_lua">
+      <actuators>
+        <differential_steering implementation="default" />
+        <leds implementation="default" medium="leds" />
+      </actuators>
+      <sensors>
+        <qupa_proximity implementation="default" show_rays="false" />
+        <colored_blob_omnidirectional_camera implementation="rot_z_only" medium="leds" show_rays="false" />
+        <ground implementation="rot_z_only" />
+      </sensors>
+      <params script="controller/control_qupa.lua" />
+    </lua_controller>
+    <lua_controller id="crazyflie_lua">
+      <actuators>
+        <quadrotor_speed implementation="default" />
+        <leds implementation="default" medium="leds" />
+      </actuators>
+      <sensors>
+        <positioning implementation="default" />
+        <crazyflie_battery implementation="default" />
+        <crazyflie_colored_blob_perspective_camera implementation="default" medium="leds" show_rays="false" />
+        <crazyflie_apriltag implementation="default" tag_medium="tags" range="3.0" fov="110" show_rays="true" show_fov="true" />
+      </sensors>
+      <params script="controller/control_crazyflie.lua" />
+    </lua_controller>
+  </controllers>
+  <arena size="4,4,2" center="0,0,1">
+    <floor id="floor" source="image" path="experiments/textura_piso.jpg" pixels_per_meter="100" />
+    <qupa id="q1" marker_id="101" tag_medium="tags">
+      <body position="-0.45,-0.45,0" orientation="0,0,0" />
+      <controller config="qupa_lua" />
+    </qupa>
+    <qupa id="q2" marker_id="102" tag_medium="tags">
+      <body position="0.0,-0.45,0" orientation="0,0,0" />
+      <controller config="qupa_lua" />
+    </qupa>
+    <qupa id="q3" marker_id="103" tag_medium="tags">
+      <body position="0.45,-0.45,0" orientation="0,0,0" />
+      <controller config="qupa_lua" />
+    </qupa>
+    <qupa id="q4" marker_id="104" tag_medium="tags">
+      <body position="-0.45,0.15,0" orientation="0,0,0" />
+      <controller config="qupa_lua" />
+    </qupa>
+    <qupa id="q5" marker_id="105" tag_medium="tags">
+      <body position="0.0,0.15,0" orientation="0,0,0" />
+      <controller config="qupa_lua" />
+    </qupa>
+    <qupa id="q6" marker_id="106" tag_medium="tags">
+      <body position="0.45,0.15,0" orientation="0,0,0" />
+      <controller config="qupa_lua" />
+    </qupa>
+    <crazyflie id="cf1">
+      <body position="-0.35,0.0,1.0" orientation="0,0,0" />
+      <controller config="crazyflie_lua" />
+      <crazyflie_battery start_charge="1.0" />
+    </crazyflie>
+    <qupa id="q7" marker_id="107" tag_medium="tags">
+      <body position="1.5,0.0,0" orientation="0,0,0" />
+      <controller config="qupa_lua" />
+    </qupa>
+  </arena>
+  <physics_engines>
+    <pointmass3d id="pm3d" iterations="10" />
+  </physics_engines>
+  <media>
+    <tag id="tags" index="grid" grid_size="5,5,5" />
+    <led id="leds" index="grid" grid_size="40,40,4" />
+  </media>
+  <visualization>
+    <qt-opengl lua_editor="true">
+      <camera>
+        <placement idx="0" position="0,-5,4" look_at="0,0,0.5" up="0,0,1" lens_focal_length="35" />
+      </camera>
+    </qt-opengl>
+  </visualization>
+</argos-configuration>
