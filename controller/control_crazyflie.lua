@@ -18,40 +18,53 @@ end
 
 function init()
    counter = 0
-   log("crazyflie QUPA apriltag validation initialized")
+   robot.quadrotor.set_linear_velocity(0.0, 0.0, 0.0)
+   robot.quadrotor.set_rotational_speed(0.0)
+   log("Crazyflie started in hover and tag detection test")
 end
 
 function step()
    counter = counter + 1
 
-   local qupa_detections = 0
-   for i, tag in ipairs(robot.apriltag) do
-      if is_qupa_tag(tag.id) then
-         qupa_detections = qupa_detections + 1
-         log(string.format(
-            "QUPA tag detected id=%d x=%.3f y=%.3f yaw=%.3f distance=%.3f angle=%.3f",
-            tag.id,
-            tag.x,
-            tag.y,
-            tag.yaw,
-            tag.distance,
-            tag.angle
-         ))
-      else
-         log(string.format(
-            "non-QUPA tag ignored id=%d x=%.3f y=%.3f yaw=%.3f distance=%.3f angle=%.3f",
-            tag.id,
-            tag.x,
-            tag.y,
-            tag.yaw,
-            tag.distance,
-            tag.angle
-         ))
-      end
-   end
+   robot.quadrotor.set_linear_velocity(0.0, 0.0, 0.0)
+   robot.quadrotor.set_rotational_speed(0.0)
 
-   if qupa_detections == 0 and counter % NO_DETECTION_LOG_PERIOD == 0 then
-      log("no QUPA tags detected")
+   if counter % NO_DETECTION_LOG_PERIOD == 0 then
+      local p = robot.positioning.position
+      log(string.format(
+         "Crazyflie position x=%.3f y=%.3f z=%.3f",
+         p.x, p.y, p.z
+      ))
+
+      local qupa_detections = 0
+      for i, tag in ipairs(robot.apriltag) do
+         if is_qupa_tag(tag.id) then
+            qupa_detections = qupa_detections + 1
+            log(string.format(
+               "QUPA tag detected id=%d x=%.3f y=%.3f yaw=%.3f distance=%.3f angle=%.3f",
+               tag.id,
+               tag.x,
+               tag.y,
+               tag.yaw,
+               tag.distance,
+               tag.angle
+            ))
+         else
+            log(string.format(
+               "non-QUPA tag ignored id=%d x=%.3f y=%.3f yaw=%.3f distance=%.3f angle=%.3f",
+               tag.id,
+               tag.x,
+               tag.y,
+               tag.yaw,
+               tag.distance,
+               tag.angle
+            ))
+         end
+      end
+
+      if qupa_detections == 0 then
+         log("no QUPA tags detected")
+      end
    end
 end
 
@@ -60,4 +73,6 @@ function reset()
 end
 
 function destroy()
+   robot.quadrotor.set_linear_velocity(0.0, 0.0, 0.0)
+   robot.quadrotor.set_rotational_speed(0.0)
 end

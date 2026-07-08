@@ -15,7 +15,7 @@
         <colored_blob_omnidirectional_camera implementation="rot_z_only" medium="leds" show_rays="false" />
         <ground implementation="rot_z_only" />
       </sensors>
-      <params script="/home/byron/SoNS/controller/control_qupa.lua" />
+      <params script="controller/control_qupa.lua" />
     </lua_controller>
     <lua_controller id="crazyflie_lua">
       <actuators>
@@ -28,11 +28,11 @@
         <crazyflie_colored_blob_perspective_camera implementation="default" medium="leds" show_rays="false" />
         <crazyflie_apriltag implementation="default" tag_medium="tags" range="3.0" fov="110" show_rays="true" show_fov="true" />
       </sensors>
-      <params script="/home/byron/SoNS/controller/control_crazyflie.lua" />
+      <params script="controller/control_crazyflie.lua" />
     </lua_controller>
   </controllers>
   <arena size="4,4,2" center="0,0,1">
-    <floor id="floor" source="image" path="/home/byron/SoNS/experiments/textura_piso.jpg" pixels_per_meter="100" />
+    <floor id="floor" source="image" path="experiments/textura_piso.jpg" pixels_per_meter="100" />
     <qupa id="q1" marker_id="101" tag_medium="tags">
       <body position="-0.45,-0.45,0" orientation="0,0,0" />
       <controller config="qupa_lua" />
