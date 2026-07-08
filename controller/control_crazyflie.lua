@@ -1,48 +1,58 @@
-pcounter = 0
+pcall(function() os.setlocale("C", "numeric") end)
 
-function normalize_angle(a)
-   while a > math.pi do a = a - 2.0 * math.pi end
-   while a < -math.pi do a = a + 2.0 * math.pi end
-   return a
-end
+local counter = 0
+local NO_DETECTION_LOG_PERIOD = 10
 
-function pose_inverse(p)
-   local c = math.cos(p.yaw)
-   local s = math.sin(p.yaw)
-   return {
-      x = -(c * p.x + s * p.y),
-      y = -(-s * p.x + c * p.y),
-      yaw = -p.yaw
-   }
-end
+local QUPA_TAG_IDS = {
+   [101] = true,
+   [102] = true,
+   [103] = true,
+   [104] = true,
+   [105] = true,
+   [106] = true,
+}
 
-function pose_compose(a, b)
-   local c = math.cos(a.yaw)
-   local s = math.sin(a.yaw)
-   return {
-      x = a.x + c * b.x - s * b.y,
-      y = a.y + s * b.x + c * b.y,
-      yaw = normalize_angle(a.yaw + b.yaw)
-   }
-end
-
-function shared_tag_peer_pose(my_tag, peer_tag)
-   return pose_compose(my_tag, pose_inverse(peer_tag))
+function is_qupa_tag(tag_id)
+   return QUPA_TAG_IDS[tag_id] == true
 end
 
 function init()
-   log("crazyflie_apriltag demo initialized")
+   counter = 0
+   log("crazyflie QUPA apriltag validation initialized")
 end
 
 function step()
+   counter = counter + 1
+
+   local qupa_detections = 0
    for i, tag in ipairs(robot.apriltag) do
-      log(string.format("tag[%d] id=%d x=%.3f y=%.3f yaw=%.3f distance=%.3f angle=%.3f",
-                        i, tag.id, tag.x, tag.y, tag.yaw, tag.distance, tag.angle))
+      if is_qupa_tag(tag.id) then
+         qupa_detections = qupa_detections + 1
+         log(string.format(
+            "QUPA tag detected id=%d x=%.3f y=%.3f yaw=%.3f distance=%.3f angle=%.3f",
+            tag.id,
+            tag.x,
+            tag.y,
+            tag.yaw,
+            tag.distance,
+            tag.angle
+         ))
+      else
+         log(string.format(
+            "non-QUPA tag ignored id=%d x=%.3f y=%.3f yaw=%.3f distance=%.3f angle=%.3f",
+            tag.id,
+            tag.x,
+            tag.y,
+            tag.yaw,
+            tag.distance,
+            tag.angle
+         ))
+      end
    end
 
-   -- RAB cooperative fusion belongs here once a RAB actuator/sensor Lua API is enabled.
-   -- Message payload shape: sender_id, tag_id, tag_x, tag_y, tag_yaw.
-   counter = counter + 1
+   if qupa_detections == 0 and counter % NO_DETECTION_LOG_PERIOD == 0 then
+      log("no QUPA tags detected")
+   end
 end
 
 function reset()

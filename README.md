@@ -28,7 +28,7 @@ Este repositorio trabaja con dos plataformas simuladas en ARGoS3:
 |   +-- control_qupa.lua
 |   +-- control_crazyflie.lua
 +-- experiments/
-|   +-- self_organize_system.argos
+|   +-- crazy_detect_qupa.argos
 |   +-- floor.png
 |   +-- textura_piso.jpg
 +-- self_organize_system.argos
@@ -39,7 +39,7 @@ Este repositorio trabaja con dos plataformas simuladas en ARGoS3:
 - `controller/control_qupa.lua`: controlador simple para QUPA en el experimento heterogeneo.
 - `controller/control_crazyflie.lua`: controlador de prueba para Crazyflie usando deteccion AprilTag.
 - `self_organize_system.argos`: configuracion enfocada en seis robots QUPA con comunicacion `range_and_bearing`.
-- `experiments/self_organize_system.argos`: configuracion heterogenea con seis QUPA y un Crazyflie.
+- `experiments/crazy_detect_qupa.argos`: configuracion heterogenea con seis QUPA y un Crazyflie.
 
 ## Experimentos
 
@@ -49,7 +49,7 @@ El archivo `self_organize_system.argos` instancia seis robots QUPA y usa `range_
 
 ### QUPA + Crazyflie
 
-El archivo `experiments/self_organize_system.argos` combina robots terrestres QUPA con un Crazyflie. Esta configuracion sirve como punto de partida para escenarios heterogeneos donde un robot aereo puede detectar tags y colaborar con robots terrestres.
+El archivo `experiments/crazy_detect_qupa.argos` combina robots terrestres QUPA con un Crazyflie. Esta configuracion sirve como punto de partida para escenarios heterogeneos donde un robot aereo puede detectar tags y colaborar con robots terrestres.
 
 ## Ejecucion
 
@@ -68,7 +68,7 @@ argos3 -c self_organize_system.argos
 Ejecutar el experimento heterogeneo:
 
 ```bash
-argos3 -c experiments/self_organize_system.argos
+argos3 -c experiments/crazy_detect_qupa.argos
 ```
 
 ## Referencias
