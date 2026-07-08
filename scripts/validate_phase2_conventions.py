@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONSTANTS = ROOT / "controller" / "phase2" / "common" / "constants.lua"
 PROTOCOL = ROOT / "controller" / "phase2" / "common" / "protocol.lua"
 MATH_UTILS = ROOT / "controller" / "phase2" / "common" / "math_utils.lua"
+NEIGHBOR_TABLE = ROOT / "controller" / "phase2" / "common" / "neighbor_table.lua"
 README = ROOT / "controller" / "phase2" / "README.md"
 
 
@@ -72,6 +73,9 @@ def validate_protocol():
         (r"RESERVED\s*=\s*10\b", "byte 10 must be RESERVED"),
         (r"function\s+M\.encode_signed\(value, max_abs\)", "encode_signed(value, max_abs) must exist"),
         (r"function\s+M\.decode_signed\(byte, max_abs\)", "decode_signed(byte, max_abs) must exist"),
+        (r"function\s+M\.build_packet\(fields\)", "build_packet(fields) must exist"),
+        (r"function\s+M\.decode_packet\(data\)", "decode_packet(data) must exist"),
+        (r"function\s+M\.is_valid_packet\(decoded\)", "is_valid_packet(decoded) must exist"),
     ]
     for pattern, message in checks:
         result = require(pattern, text, message)
@@ -104,20 +108,40 @@ def validate_math_utils():
     return 0
 
 
+def validate_neighbor_table():
+    try:
+        text = read_required(NEIGHBOR_TABLE)
+    except FileNotFoundError:
+        return fail(f"missing {NEIGHBOR_TABLE.relative_to(ROOT)}")
+
+    checks = [
+        (r"function\s+M\.new\(self_uid\)", "neighbor_table.new(self_uid) must exist"),
+        (r"function\s+M\.update_from_packet\(table_state, decoded, rab_packet, tick\)", "update_from_packet(table_state, decoded, rab_packet, tick) must exist"),
+        (r"function\s+M\.mark_stale\(table_state, tick, timeout_ticks\)", "mark_stale(table_state, tick, timeout_ticks) must exist"),
+        (r"function\s+M\.get\(table_state, uid\)", "get(table_state, uid) must exist"),
+        (r"function\s+M\.active_ids\(table_state\)", "active_ids(table_state) must exist"),
+    ]
+    for pattern, message in checks:
+        result = require(pattern, text, message)
+        if result:
+            return result
+    return 0
+
+
 def validate_readme():
     try:
         text = read_required(README)
     except FileNotFoundError:
         return fail(f"missing {README.relative_to(ROOT)}")
 
-    for snippet in ("UID", "DT = 0.1", "10 bytes", "Phase 3", "math_utils.lua"):
+    for snippet in ("UID", "DT = 0.1", "10 bytes", "Phase 3", "math_utils.lua", "neighbor_table.lua"):
         if snippet not in text:
             return fail(f"Phase 2 README must mention {snippet!r}")
     return 0
 
 
 def main():
-    for validator in (validate_constants, validate_protocol, validate_math_utils, validate_readme):
+    for validator in (validate_constants, validate_protocol, validate_math_utils, validate_neighbor_table, validate_readme):
         result = validator()
         if result != 0:
             return result

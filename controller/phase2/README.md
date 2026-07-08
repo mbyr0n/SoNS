@@ -34,6 +34,20 @@ The Phase 2 RAB packet has 10 bytes:
 
 This protocol is intentionally limited to Phase 2 heartbeat, state, and command messages. Phase 3 concepts such as recruitment, dynamic tree assignment, split, merge, and brain replacement are out of scope here.
 
+`common/protocol.lua` provides pure Lua helpers to build and decode packets:
+
+- `build_packet(fields)` creates a 10-byte RAB payload.
+- `decode_packet(data)` converts a RAB data table into named fields.
+- `is_valid_packet(decoded)` rejects incomplete packets, wrong protocol versions, invalid sender IDs, and unknown message types.
+
+## Neighbor Table
+
+`common/neighbor_table.lua` stores fresh local neighbors by UID.
+
+Each entry stores `uid`, `robot_type`, `role`, `state`, `range`, `bearing`, `vertical_bearing`, `last_seen`, `sequence`, and `active`.
+
+The table ignores packets from the local robot and marks entries inactive after the configured timeout. It does not reconstruct a global adjacency matrix; that remains a logging or loop-function responsibility.
+
 ## Shared Math
 
 `common/math_utils.lua` provides small reusable helpers for controllers:
